@@ -1,0 +1,53 @@
+{"players":[
+        {
+            "name":"chouaib",
+            "buyIn": 200,
+            "CaveFinal": 500
+        },
+        {
+            "name":"messrar",
+            "buyIn": 200,
+            "CaveFinal": 0
+        },
+       {
+        "name":"mouad",
+        "buyIn": 1000,
+        "CaveFinal": 800
+       },
+       {
+        "name":"chouaib",
+        "buyIn": 200,
+        "CaveFinal": 500
+    },
+    {
+        "name":"messrar",
+        "buyIn": 200,
+        "CaveFinal": 0
+    },
+    {
+        "name":"chouaib",
+        "buyIn": 200,
+        "CaveFinal": 500
+    },
+    {
+        "name":"messrar",
+        "buyIn": 200,
+        "CaveFinal": 0
+    },
+   {
+    "name":"mouad",
+    "buyIn": 1000,
+    "CaveFinal": 800
+   },
+   {
+    "name":"mouad",
+    "buyIn": 1000,
+    "CaveFinal": 800
+   },
+       {
+        "name":"Gribiza",
+        "buyIn": 200,
+        "CaveFinal": 300
+       }
+    ]
+}

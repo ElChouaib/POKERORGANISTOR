@@ -25,3 +25,48 @@
 #container a {
   text-decoration: none;
 }
+.bg-img {
+  padding: 1px;
+  height: 100%;
+  width: 100%;
+  margin-top: 25px;
+  background-image: url('../../assets/bg.jpg');
+  background-repeat: repeat-y;
+  background-size: cover;  
+
+}
+
+h1 {
+  color:white;
+  margin-left: 20px;
+  font-size: 30px;
+  text-align: left;
+}
+h5 {
+  color: white;
+  text-align: left;
+  margin-left: 20px;
+  margin-top: -7px;
+  font-size: medium;
+  margin-bottom: 15px;
+  text-transform: capitalize;
+}
+.add-button {
+  --background: #383a3e;
+  position: sticky;
+  bottom: 0px;
+  width: 96%;
+  --color: #ffffff;
+  margin-left: 2%;
+}
+.ion-card{
+  margin-bottom: 0px;
+  margin-top:0px;
+}
+.input-player{
+  position: sticky;
+  bottom: 45px;
+  width: 96%;
+  --color: #ffffff;
+  margin-left: 2%;
+}

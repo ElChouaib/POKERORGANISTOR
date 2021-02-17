@@ -1,20 +1,39 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>
-      Blank
+   POKER PARTY
     </ion-title>
+   <ion-button (click) = "presentAlertConfirm('do you want to delete all Players');"><ion-icon name="trash-outline"></ion-icon></ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div id="container" class="bg-img"> 
+    <h1>Today</h1>
+    <h5><b>{{currentDate}}</b></h5>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <ion-card *ngFor="let player of PlayerList">
+        <ion-item>
+          <ion-label> {{player.name}}</ion-label>
+          <ion-label> {{player.buyIn}}</ion-label>
+          <ion-label> {{player.CaveFinal}}</ion-label>
+        </ion-item>
+    </ion-card>
+
+    <ion-card *ngIf="PlayerAdded" class="input-player">
+      <ion-item lines="none" >
+        <ion-input [(ngModel)]="newPlayer.name" placeholder="New Player"></ion-input>
+        <ion-button (click)="AddPlayer()" shape="round"><ion-icon  name="person-add-outline"></ion-icon></ion-button>
+      </ion-item>
+    </ion-card>
+
+    <ion-button *ngIf="!PlayerAdded" (click)="showForm()" expand="block" class="add-button">
+      <ion-icon name="add" slot="start"></ion-icon>
+      Add Player
+    </ion-button>
+    <ion-button *ngIf="PlayerAdded" (click)="showForm()" expand="block" class="add-button">
+      <ion-icon name="close" slot="start"></ion-icon>
+      Annuler
+    </ion-button>
   </div>
 </ion-content>
