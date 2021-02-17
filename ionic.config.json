@@ -1,0 +1,7 @@
+{
+  "name": "PokerOrganistor",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
