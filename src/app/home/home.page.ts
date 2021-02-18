@@ -1,7 +1,8 @@
-import { Player, StorageService } from './../services/storage.service';
+import { HistoricComponent } from './../historic/historic.component';
+import { Player,historyLog, StorageService } from './../services/storage.service';
 import { Storage } from '@ionic/storage';
 import { Component } from '@angular/core';
-import { Platform, ToastController, AlertController } from '@ionic/angular';
+import { Platform, ToastController, AlertController, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -9,14 +10,23 @@ import { Platform, ToastController, AlertController } from '@ionic/angular';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
+
+  /************************************************Variables*************************************************/
   date : Date = new Date();
   currentDate = this.date.toLocaleDateString('en-EN', { weekday: 'long', month: 'long', day: 'numeric' });
   namePlayerField: String;
   PlayerList: Player[] = [];
   newPlayer : Player = <Player>{};
-
+  Setting = {buyIn: 200}
   PlayerAdded : boolean;
-  constructor(private storage: Storage, private plt: Platform, private SStorage: StorageService, private toastController: ToastController, private alertController: AlertController) {
+
+/**************************************************Constructor***********************************************/
+  constructor(  private plt: Platform,
+                private SStorage: StorageService,
+                private toastController: ToastController,
+                private alertController: AlertController,
+                private ModalCntrl : ModalController,
+              ) {
     this.plt.ready().then(() =>{
       this.LoadPlayers();
     })
@@ -91,6 +101,14 @@ export class HomePage {
     else
       return 'danger';
   }
+  /**********************************************VALIDATION****************************************/
+  isValid(playername: String)
+  {
+      if (playername.length === 0 || playername.length >= 10)
+        return false
+      return true
+  }
+
   /* ******************************************CRUD OPERATIONS****************************************** */
 
   //READ PLAYERS
@@ -102,13 +120,19 @@ export class HomePage {
 
   //ADD PLAYERS
   AddPlayer(){
-      this.newPlayer = {id: Date.now(), name:this.namePlayerField, buyIn: 200, CaveFinal:200}
-      this.SStorage.addPlayer(this.newPlayer).then(player => {
-      this.newPlayer = <Player>{};
-      this.showToast('PLAYER ADDED','success');
-      this.LoadPlayers();
-    })
-    this.showForm();
+      if (!this.isValid(this.namePlayerField))
+        this.showToast('Enter a valid name', 'danger')
+      else{
+        this.newPlayer = {id: Date.now(), name:this.namePlayerField, buyIn: 200, CaveFinal:200}
+        this.SStorage.addPlayer(this.newPlayer).then(player => {
+        this.newPlayer = <Player>{};
+        this.showToast('PLAYER ADDED','success');
+        this.LoadPlayers();
+        this.showForm();
+      
+        })
+      }
+    
       
   }
 
@@ -119,12 +143,16 @@ export class HomePage {
         this.showToast('ALL PLAYERS DELETED','danger')
     })
   }
+
+  //updatePlayer
   updatePlayer(player: Player){
     this.SStorage.updatePlayer(player).then(res =>{
       this.LoadPlayers();
       this.showToast('BUYIN UPDATED','success')
     })
   }
+
+  //Delete Player
   deletePlayer(player: Player)
   {
     this.SStorage.deletePlayer(player).then(res => 
@@ -133,5 +161,12 @@ export class HomePage {
         this.showToast('Player Deleted','danger')
       })
   }
-  
+  /*****************************************ModalController********************************************************/
+  showHistoric(){
+      this.ModalCntrl.create({
+        component:HistoricComponent
+      }).then(modelres =>{
+        modelres.present();
+      })
+  }
 }
