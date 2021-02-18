@@ -5,8 +5,8 @@ import { promise } from 'protractor';
 export interface Player{
   id: number;
   name: String;
-  buyIn: Number;
-  CaveFinal: Number;
+  buyIn: number;
+  CaveFinal: number;
 }
 
 const PLAYERS_KEYS = 'my-players';
@@ -21,11 +21,9 @@ export class StorageService {
   addPlayer(player: Player) :Promise<any>
   {
     return this.storage.get(PLAYERS_KEYS).then((players: Player[]) => {
-      console.log(player);
       if (players){
-        console.log('player:' + player.name);
+        console.log(player)
         players.push(player);
-        console.log('players list:', players);
         return this.storage.set(PLAYERS_KEYS, players)
       } else {
         return this.storage.set(PLAYERS_KEYS, [player])
@@ -42,9 +40,10 @@ export class StorageService {
   //update
   updatePlayer(player: Player): Promise<any> {
       return this.storage.get(PLAYERS_KEYS).then((players: Player[]) => {
-        if (players || players.length == 0)
+        if(players.length === 0){
+          console.log('we r here')
           return null;
-        
+        }
         let newPlayers: Player[] = [];
         for (let p of players){
             if (p.id === player.id)
@@ -52,18 +51,19 @@ export class StorageService {
             else
             newPlayers.push(p);
         }
+       
         return this.storage.set(PLAYERS_KEYS, newPlayers);
       })
   }
 
   //delete
-  deletePlayer(id: number): Promise<any>{
+  deletePlayer(player: Player): Promise<any>{
     return this.storage.get(PLAYERS_KEYS).then((players: Player[]) =>{
-      if (players || players.length == 0)
+      if (players.length === 0)
           return null;
       let PlayerstoKeep: Player[] = []
       for (let p of players){
-        if (p.id !== id)
+        if (p.id !== player.id)
         PlayerstoKeep.push(p);
       }
       return this.storage.set(PLAYERS_KEYS, PlayerstoKeep)

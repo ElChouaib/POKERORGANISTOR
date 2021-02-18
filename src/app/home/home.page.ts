@@ -10,7 +10,8 @@ import { Platform, ToastController, AlertController } from '@ionic/angular';
 })
 export class HomePage {
   date : Date = new Date();
-  currentDate = this.date.toLocaleDateString('en-EN', { weekday: 'long', month: 'long', day: 'numeric' }); 
+  currentDate = this.date.toLocaleDateString('en-EN', { weekday: 'long', month: 'long', day: 'numeric' });
+  namePlayerField: String;
   PlayerList: Player[] = [];
   newPlayer : Player = <Player>{};
 
@@ -20,17 +21,20 @@ export class HomePage {
       this.LoadPlayers();
     })
   }
-
- async showToast(msg){
+/******************************************* Design features *******************************************/ 
+  //Show toast function
+ async showToast(msg, toastcolor){
    const toast = await this.toastController.create({
      message: msg,
-     duration: 1500,
-     position:"top"
+     duration: 700,
+     position:"top",
+     color:toastcolor
 
    });
    toast.present();
  }
 
+ //show msg confirmation after clicking in deleteALL button
  async presentAlertConfirm(msg:any) {
   if (this.PlayerList.length === 0)
     return null;
@@ -58,12 +62,36 @@ export class HomePage {
   await alert.present();
 }
 
-  
+  //switch to display or hide the form
   showForm(){
     this.PlayerAdded = !this.PlayerAdded;
-    this.newPlayer.name = '';
+    this.namePlayerField = '';
   }
 
+ 
+
+  showNetEarning(buyin: number, cavefinal: number)
+  {
+    let netEarning = cavefinal - buyin;
+    return (netEarning >=0)? '+'.concat(netEarning.toString()) : netEarning.toString();
+  }
+  /******************************************* COLORS*******************************************/
+  getColor(buyin: number, cavefinal: number){ 
+    return (cavefinal - buyin >= 0) ? 'green' : 'red';
+
+  }
+  getColorofBadge(buyin)
+  {
+    if (buyin < 600)
+      return 'secondary';
+    else if (buyin < 1000)
+      return 'tertiary';
+    else if (buyin < 1400)
+      return 'warning';
+    else
+      return 'danger';
+  }
+  /* ******************************************CRUD OPERATIONS****************************************** */
 
   //READ PLAYERS
   LoadPlayers(){
@@ -74,13 +102,10 @@ export class HomePage {
 
   //ADD PLAYERS
   AddPlayer(){
-    this.newPlayer.id = Date.now();
-    this.newPlayer.buyIn = 200;
-    this.newPlayer.CaveFinal = 200;
-    console.log('ts :' + this.newPlayer.name);
-    this.SStorage.addPlayer(this.newPlayer).then(player => {
+      this.newPlayer = {id: Date.now(), name:this.namePlayerField, buyIn: 200, CaveFinal:200}
+      this.SStorage.addPlayer(this.newPlayer).then(player => {
       this.newPlayer = <Player>{};
-      this.showToast('PLAYER ADDED');
+      this.showToast('PLAYER ADDED','success');
       this.LoadPlayers();
     })
     this.showForm();
@@ -91,7 +116,22 @@ export class HomePage {
   deleteAll(){
       this.SStorage.deleteALL().then(Players => {
         this.PlayerList = Players;
+        this.showToast('ALL PLAYERS DELETED','danger')
     })
+  }
+  updatePlayer(player: Player){
+    this.SStorage.updatePlayer(player).then(res =>{
+      this.LoadPlayers();
+      this.showToast('BUYIN UPDATED','success')
+    })
+  }
+  deletePlayer(player: Player)
+  {
+    this.SStorage.deletePlayer(player).then(res => 
+      { 
+        this.LoadPlayers();
+        this.showToast('Player Deleted','danger')
+      })
   }
   
 }
