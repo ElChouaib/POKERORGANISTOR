@@ -25,36 +25,41 @@
 #container a {
   text-decoration: none;
 }
+.badge{
+  font-size: 10px;
+}
 .bg-img {
   padding: 1px;
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   margin-top: 25px;
   background-image: url('../../assets/bg.jpg');
-  background-repeat: repeat-y;
+  background-repeat: repeat-x;
   background-size: cover;  
 
 }
+
+
 
 h1 {
   color:white;
   margin-left: 20px;
   font-size: 30px;
   text-align: left;
-  margin-top: 20px;
+  margin-top: 60px;
 }
 h5 {
   color: white;
   text-align: left;
   margin-left: 20px;
-  margin-top: -7px;
+  margin-top: 0px;
   font-size: medium;
   margin-bottom: 15px;
   text-transform: capitalize;
 }
 .add-button {
-  --background: #383a3e;
-  position: sticky;
+  --background: #5a8ca4;
+  position: relative;
   bottom: 0px;
   width: 96%;
   --color: #ffffff;
@@ -66,13 +71,14 @@ h5 {
   width: 100%
 }
 .input-player{
-  position: sticky;
-  bottom: 45px;
+  position: relative;
+  bottom: 0px;
   width: 96%;
   --color: #ffffff;
   margin-left: 2%;
 }
 
 .newspaper-sharp{
-  text-align: right;
+  float: right;
+  text-align: center;
 }

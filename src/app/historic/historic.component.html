@@ -3,7 +3,42 @@
     <ion-title>
    HISTORY
     </ion-title>
-   <ion-button (click) = "close();"><ion-icon name="arrow-back-sharp"></ion-icon></ion-button>
-   <ion-button (click) = "presentAlertConfirm('do you want to delete all historics');"><ion-icon name="trash-outline"></ion-icon></ion-button>
+   <ion-row>
+   <ion-col><ion-button  (click) = "presentAlertConfirm('Do you want to clear logs history');"><ion-icon  name="trash-outline"></ion-icon></ion-button></ion-col> 
+  <ion-col size="6"></ion-col>
+   <ion-col><ion-button (click) = "close();"><ion-icon   name="arrow-back-sharp"></ion-icon></ion-button></ion-col>
+   </ion-row>
   </ion-toolbar>
 </ion-header>
+
+<ion-content [fullscreen]="true">
+  <div id="container" class="bg-img"> 
+      <ion-card *ngFor="let log of LogsHistory"> 
+          <ion-row>
+              <ion-col style="color:red"><strong>{{log.message}}</strong></ion-col>
+              <ion-col style="color:green"><strong>{{log.player.name}}</strong></ion-col>
+              <ion-col style="color:black"><strong>{{log.player.buyIn}}</strong></ion-col>
+              <ion-col>{{log.dateLog | date: 'dd/MM/yyyy HH:mm:ss'}}</ion-col>
+          </ion-row>
+      </ion-card>
+  </div>
+</ion-content>
+
+<ion-footer [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-content color="light">
+      <!-- fab placed in the center of the content with a list on each side -->
+      <ion-fab vertical="center" horizontal="center" slot="fixed">
+      <ion-fab-button color="danger"> 
+      <ion-icon name="share"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-list side="start">
+      <ion-fab-button><ion-icon name="logo-whatsapp"></ion-icon></ion-fab-button>
+      </ion-fab-list>
+      <ion-fab-list side="end">
+      <ion-fab-button (click)="showCard()"><ion-icon name="filter-outline"></ion-icon></ion-fab-button>
+      </ion-fab-list> 
+      </ion-fab>
+     </ion-content> 
+  </ion-toolbar>
+</ion-footer>

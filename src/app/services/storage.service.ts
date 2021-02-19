@@ -10,7 +10,9 @@ export interface Player{
 }
 
 export interface historyLog{
-  message:String;
+  message:String,
+  player: Player,
+  dateLog: Date
 }
 
 const PLAYERS_KEYS = 'my-players';
@@ -41,9 +43,9 @@ export class StorageService {
       return this.storage.get(HISTORY_KEY).then((logs: historyLog[]) => {
         if (logs){
           logs.push(log);
-          return this.storage.set(PLAYERS_KEYS, logs)
+          return this.storage.set(HISTORY_KEY, logs)
         } else {
-          return this.storage.set(PLAYERS_KEYS, [log])
+          return this.storage.set(HISTORY_KEY, [log])
         }
   
       })
@@ -55,7 +57,7 @@ export class StorageService {
   }
 
    //Read
-   getLogs():Promise<Player[]>{
+   getLogs():Promise<historyLog[]>{
     return this.storage.get(HISTORY_KEY)
   }
 
@@ -64,7 +66,6 @@ export class StorageService {
 
       return this.storage.get(PLAYERS_KEYS).then((players: Player[]) => {
         if(players.length === 0){
-          console.log('we r here')
           return null;
         }
         let newPlayers: Player[] = [];
@@ -94,9 +95,14 @@ export class StorageService {
   }
 
   //deleteALL
-  deleteALL(): Promise<any>{
+  deleteALLPlayers(): Promise<any>{
     return this.storage.get(PLAYERS_KEYS).then(() =>{
       return this.storage.set(PLAYERS_KEYS, []);
+    })
+  }
+  deleteALLLogs(): Promise<any>{
+    return this.storage.get(HISTORY_KEY).then(() =>{
+      return this.storage.set(HISTORY_KEY, []);
     })
   }
 }

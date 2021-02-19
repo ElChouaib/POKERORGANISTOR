@@ -3,27 +3,27 @@
     <ion-title>
    POKER PARTY
     </ion-title>
-   <ion-button (click) = "presentAlertConfirm('do you want to delete all Players');"><ion-icon name="trash-outline"></ion-icon></ion-button>
+   <ion-button (click) = "presentAlertConfirm('do you want to delete all Players','deleteAll');"><ion-icon name="trash-outline"></ion-icon></ion-button>
    <ion-button (click)= "showHistoric()"class="newspaper-sharp"><ion-icon name="newspaper-sharp"></ion-icon></ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <div id="container" class="bg-img"> 
-    <h1>Today</h1>
+    <h1 (click) = "showTax()">Today</h1>
     <h5><b>{{currentDate}}</b></h5>
 
     <ion-card *ngFor="let player of PlayerList">
        <ion-row>
           <ion-col >
             <strong>{{player.name}}</strong>
-            <ion-badge [color]="getColorofBadge(player.buyIn)">{{(player.buyIn / 200)}}</ion-badge>
+            <ion-badge (click)="incrementbuyin(player)" class="badge" [color]="getColorofBadge(player.buyIn)">{{(player.buyIn / 200)}}</ion-badge>
           </ion-col>
           <ion-col>
-            <ion-input inputmode="numeric" max="10000"  min="200" [step]="Setting.buyIn" placeholder="Buy-in" type="number" [(ngModel)]="player.buyIn" (ionBlur)="updatePlayer(player)"></ion-input>
+            <ion-input class="input" inputmode="numeric" max="10000"  min="200" [step]="Setting.buyIn" placeholder="Buy-in" type="number" [(ngModel)]="player.buyIn" (ionBlur)="updatePlayer(player, 'buyin')"></ion-input>
           </ion-col>
           <ion-col>
-            <ion-input inputmode="numeric" max="10000"  placeholder="Cave Finale" type="number" [(ngModel)]="player.CaveFinal" (ionBlur)="updatePlayer(player)"></ion-input>
+            <ion-input class="input" inputmode="numeric" max="10000"  placeholder="Cave Finale" type="number" [(ngModel)]="player.CaveFinal" (ionBlur)="updatePlayer(player,'cave')"></ion-input>
           </ion-col>
           <ion-col [ngStyle]="{color: getColor(player.buyIn, player.CaveFinal)}"><strong>{{showNetEarning(player.buyIn, player.CaveFinal)}}</strong></ion-col>
           <ion-col>
@@ -32,20 +32,26 @@
         </ion-row>
     </ion-card>
 
+    
+  </div>
+</ion-content>
+
+<ion-footer [translucent]="true">
+  <ion-toolbar color="primary">
     <ion-card *ngIf="PlayerAdded" class="input-player">
       <ion-item lines="none" >
         <ion-input [(ngModel)]="namePlayerField" placeholder="New Player"></ion-input>
         <ion-button (click)="AddPlayer()" shape="round"><ion-icon  name="person-add-outline"></ion-icon></ion-button>
       </ion-item>
     </ion-card>
-
+  
     <ion-button *ngIf="!PlayerAdded" (click)="showForm()" expand="block" class="add-button">
       <ion-icon name="add" slot="start"></ion-icon>
       Add Player
     </ion-button>
-    <ion-button *ngIf="PlayerAdded" (click)="showForm()" expand="block" class="add-button">
+    <ion-button *ngIf="PlayerAdded"  (click)="showForm()" expand="block" class="add-button">
       <ion-icon name="close" slot="start"></ion-icon>
       Annuler
     </ion-button>
-  </div>
-</ion-content>
+  </ion-toolbar>
+</ion-footer>

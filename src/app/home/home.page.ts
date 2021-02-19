@@ -2,8 +2,9 @@ import { HistoricComponent } from './../historic/historic.component';
 import { Player,historyLog, StorageService } from './../services/storage.service';
 import { Storage } from '@ionic/storage';
 import { Component } from '@angular/core';
-import { Platform, ToastController, AlertController, ModalController } from '@ionic/angular';
-
+import { Platform, ToastController, AlertController, ModalController, IonRouterOutlet } from '@ionic/angular';
+import {Plugins} from '@capacitor/core'
+const { App } = Plugins;
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -19,6 +20,7 @@ export class HomePage {
   newPlayer : Player = <Player>{};
   Setting = {buyIn: 200}
   PlayerAdded : boolean;
+  result = 0;
 
 /**************************************************Constructor***********************************************/
   constructor(  private plt: Platform,
@@ -26,9 +28,15 @@ export class HomePage {
                 private toastController: ToastController,
                 private alertController: AlertController,
                 private ModalCntrl : ModalController,
+                private routerOutlet: IonRouterOutlet
               ) {
     this.plt.ready().then(() =>{
       this.LoadPlayers();
+    })
+    this.plt.backButton.subscribeWithPriority(-1,() =>{
+      if (!this.routerOutlet.canGoBack()){
+        this.presentAlertConfirm('Do you want to exit ?','exit')
+      }
     })
   }
 /******************************************* Design features *******************************************/ 
@@ -36,17 +44,17 @@ export class HomePage {
  async showToast(msg, toastcolor){
    const toast = await this.toastController.create({
      message: msg,
-     duration: 700,
+     duration: 200,
      position:"top",
      color:toastcolor
-
    });
    toast.present();
  }
 
  //show msg confirmation after clicking in deleteALL button
- async presentAlertConfirm(msg:any) {
-  if (this.PlayerList.length === 0)
+ async presentAlertConfirm(msg:any, type:any) {
+  
+  if (this.PlayerList.length === 0 && type !== 'exit')
     return null;
   const alert = await this.alertController.create({
     cssClass: 'my-custom-class',
@@ -63,9 +71,12 @@ export class HomePage {
       }, {
         text: 'Okay',
         handler: () => {
-        this.deleteAll();
-        }
+        if(type === 'deleteAll')
+          this.deleteAll();
+        else if(type === 'exit')
+          App.exitApp();
       }
+    }
     ]
   });
 
@@ -84,6 +95,11 @@ export class HomePage {
   {
     let netEarning = cavefinal - buyin;
     return (netEarning >=0)? '+'.concat(netEarning.toString()) : netEarning.toString();
+  }
+
+  incrementbuyin(player: Player){
+    player.buyIn += this.Setting.buyIn;
+    this.updatePlayer(player,'buyin');
   }
   /******************************************* COLORS*******************************************/
   getColor(buyin: number, cavefinal: number){ 
@@ -116,6 +132,19 @@ export class HomePage {
     this.SStorage.getPlayers().then(Players => {
       this.PlayerList = Players;
     })
+    this.calculResult();
+    console.log(this.result);
+  }
+  calculResult(){
+    let tax = 0;
+    this.PlayerList.forEach(player => {
+      tax += player.CaveFinal - player.buyIn;
+    });
+    this.result = tax;
+  }
+
+  showTax(){
+    alert(this.result);
   }
 
   //ADD PLAYERS
@@ -123,32 +152,37 @@ export class HomePage {
       if (!this.isValid(this.namePlayerField))
         this.showToast('Enter a valid name', 'danger')
       else{
+
         this.newPlayer = {id: Date.now(), name:this.namePlayerField, buyIn: 200, CaveFinal:200}
         this.SStorage.addPlayer(this.newPlayer).then(player => {
-        this.newPlayer = <Player>{};
-        this.showToast('PLAYER ADDED','success');
-        this.LoadPlayers();
-        this.showForm();
+               this.newPlayer = <Player>{};
+               this.showToast('PLAYER ADDED','success');
+               this.LoadPlayers();
+               this.showForm();
+               
+               })
+              };
+         }
       
-        })
-      }
-    
-      
-  }
+  
 
   //deleteALL
   deleteAll(){
-      this.SStorage.deleteALL().then(Players => {
+      this.SStorage.deleteALLPlayers().then(Players => {
         this.PlayerList = Players;
         this.showToast('ALL PLAYERS DELETED','danger')
     })
   }
 
   //updatePlayer
-  updatePlayer(player: Player){
+  updatePlayer(player: Player, type:String){
+    if(type === 'buyin'){
+      let log: historyLog = {message:'RECAVE',player:player,dateLog:new Date()}
+      this.SStorage.addLogHistory(log).then(log => {console.log(log)})
+    }
     this.SStorage.updatePlayer(player).then(res =>{
       this.LoadPlayers();
-      this.showToast('BUYIN UPDATED','success')
+      this.showToast('UPDATED','success')
     })
   }
 
